@@ -3,6 +3,9 @@
 <head>
     <title>Banzuke Surfing Game</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Link to the external CSS file -->
+    <!-- Uncomment this if you have styles to include -->
+    <!-- <link rel="stylesheet" href="styles.css"> -->
 </head>
 <body>
     <h1>Welcome to Banzuke Surfing Game!</h1>
@@ -13,14 +16,7 @@
         <!-- more options here -->
     </select>
     <button onclick="startPlaying()">Start Playing</button>
-    <script>
-        function startPlaying() {
-            var rikishi = $('#rikishi').val();
-            // This is where you'd connect to your game logic
-            // For example:
-            // sendRikishiToServer(rikishi);
-            alert("You selected: " + rikishi);
-        }
-    </script>
+    <!-- Link to the external JavaScript file -->
+    <script src="game.js"></script>
 </body>
 </html>
