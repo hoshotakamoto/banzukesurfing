@@ -11,6 +11,7 @@
   "license": "ISC",
   "devDependencies": {
     "jest": "^29.5.0",
+    "jest-localstorage-mock": "^2.4.26",
     "jsdom": "^22.1.0"
   }
 }
