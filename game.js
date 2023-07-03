@@ -83,6 +83,7 @@ export default class Game {
         if (userElement) {
             userElement.textContent = 'Current user: ' + this.user;
         }
+        this.displayBackfilledResults(); // Display the initial results
     }
 }
 
