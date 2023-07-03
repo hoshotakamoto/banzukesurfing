@@ -18,6 +18,8 @@ beforeEach(() => {
         <input id="userSwitch" type="text">
         <input id="backfillContest" type="text">
         <input id="backfillRikishi" type="text">
+        <div id="backfilledResults"></div>
+        <p id="feedback"></p>
     `;
     game = new Game();
 });
@@ -28,4 +30,16 @@ test('check if startPlaying is defined and returns expected value', () => {
     expect(result).toBe("You selected: 1\nPrevious Picks: {\"July 2023\":\"1\"}");
 });
 
-// More tests for switchUser() and backfillResults()...
+test('check if switchUser updates the user in UI', () => {
+    document.querySelector('#userSwitch').value = 'newUser';
+    game.switchUser();
+    expect(document.querySelector('#user').textContent).toBe('Current user: newUser');
+});
+
+test('check if backfillResults updates the results in UI', () => {
+    document.querySelector('#backfillContest').value = 'May 2023';
+    document.querySelector('#backfillRikishi').value = '2';
+    game.backfillResults();
+    let resultsElement = document.querySelector('#backfilledResults');
+    expect(resultsElement.textContent).toContain('May 2023: 2');
+});
