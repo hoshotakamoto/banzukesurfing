@@ -1,5 +1,5 @@
 function startPlaying() {
-    var rikishi = $('#rikishi').val();
+    var rikishi = document.querySelector('#rikishi').value;
     var user = getUser();
     var picks = getPicks(user);
     var message = "You selected: " + rikishi + "\nPrevious Picks: " + JSON.stringify(picks);
@@ -11,26 +11,24 @@ function getUser() {
     // get user from local storage
     var user = localStorage.getItem('user');
     if (!user) {
-        user = 'admin'; // default user is admin
+        user = 'admin';
         localStorage.setItem('user', user);
     }
     return user;
 }
 
 function getPicks(user) {
-    // get picks from local storage
     var picks = JSON.parse(localStorage.getItem(user));
     if (!picks) {
-        picks = {}; // initialize empty object if no picks
+        picks = {};
     }
     return picks;
 }
 
 function updatePicks(user, rikishi) {
-    // update picks in local storage
     var picks = getPicks(user);
     var currentContest = new Date().getMonth();
-    if ([0, 2, 4, 6, 8, 10].includes(currentContest)) { // If it's a contest month (Jan, Mar, May, Jul, Sep, Nov)
+    if ([0, 2, 4, 6, 8, 10].includes(currentContest)) {
         var contestName = new Date().toLocaleString('default', { month: 'long' }) + ' ' + new Date().getFullYear();
         picks[contestName] = rikishi;
         localStorage.setItem(user, JSON.stringify(picks));
@@ -38,23 +36,28 @@ function updatePicks(user, rikishi) {
 }
 
 function switchUser() {
-    var newUser = $('#userSwitch').val();
+    var newUser = document.querySelector('#userSwitch').value;
     localStorage.setItem('user', newUser);
-    $('#user').text('Current user: ' + newUser);
+    document.querySelector('#user').textContent = 'Current user: ' + newUser;;
 }
 
 function backfillResults() {
     var user = getUser();
-    var contestName = $('#backfillContest').val();
-    var rikishi = $('#backfillRikishi').val();
+    var contestName = document.querySelector('#backfillContest').value;
+    var rikishi = document.querySelector('#backfillRikishi').value;
     var picks = getPicks(user);
     picks[contestName] = rikishi;
     localStorage.setItem(user, JSON.stringify(picks));
 }
 
-$(document).ready(function() {
+function initialize() {
     var user = getUser();
-    $('#user').text('Current user: ' + user);
-});
+    var userElement = document.querySelector('#user');
+    if (userElement) {
+        userElement.textContent = 'Current user: ' + user;
+    }
+}
 
-module.exports = { startPlaying, switchUser, backfillResults };
+initialize();
+
+module.exports = { startPlaying, switchUser, backfillResults, initialize };
