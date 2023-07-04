@@ -55,11 +55,26 @@ export default class Game {
         localStorage.setItem('users', JSON.stringify(usersData));
     }
 
+    switchUser(newUser) {
+        this.userId = newUser;
+        localStorage.setItem('user', newUser);
+    }
+
     initialize() {
         this.loadAllUsers();
         const activeUserId = localStorage.getItem('user');
         if (activeUserId && this.setActiveUser(activeUserId)) {
             this.displayAllUsers();
+
+            // Setup event listener for switching users
+            document.querySelector("#switchUserButton").addEventListener('click', () => {
+                const newUser = document.querySelector('#userSwitch').value;
+                if (this.switchUser(newUser)) {
+                    document.querySelector("#user").textContent = 'Current user: ' + newUser;
+                } else {
+                    this.provideFeedback('User not found: ' + newUser);
+                }
+            });
 
             document.querySelector("#startPlayingButton").addEventListener('click', () => this.startPlaying());
             document.querySelector("#backfillResultsButton").addEventListener('click', () => this.backfillResults());
