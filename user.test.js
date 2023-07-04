@@ -42,3 +42,15 @@ test('check if backfillResults updates the results correctly', () => {
     let picks = user.getPicks();
     expect(picks['May 2023']).toBe('2');
 });
+
+test('check if initialize updates the user in UI and sets event listener', () => {
+    user.initialize();
+    expect(document.querySelector('#user').textContent).toBe('Current user: testUser');
+
+    // Test switchUser event listener
+    document.querySelector('#userSwitch').value = 'newUser';
+    document.querySelector("#switchUserButton").click();
+    expect(localStorage.getItem('user')).toBe('newUser');
+    expect(document.querySelector('#user').textContent).toBe('Current user: newUser');
+});
+
