@@ -3,13 +3,12 @@ import User from './user.js';
 export default class Game {
     constructor() {
         this.users = [];
+        this.usersData = JSON.parse(localStorage.getItem('users')) || {};
+        this.selectedUser = null;
     }
 
     loadAllUsers() {
-        for (let i = 0; i < localStorage.length; i++) {
-            const userId = localStorage.key(i);
-            this.users.push(new User(userId));
-        }
+        this.users = Object.keys(this.usersData.map(userId => new User(userId, this.usersData[userId])));
     }
 
     displayAllUsers() {
@@ -18,11 +17,13 @@ export default class Game {
             document.querySelector('#user').textContent += `User ${user.userId}: ${userDetails}\n`;
         });
     }
+
     startPlaying() {
         const rikishi = document.querySelector('#rikishi').value;
         const picks = this.user.getPicks();
         const message = "You selected: " + rikishi + "\nPrevious Picks: " + JSON.stringify(picks);
-        this.user.updatePicks(rikishi); // Update the picks with the new selection
+        this.selectedUser.updatePicks(rikishi); // Update the picks with the new selection
+        this.saveUser();
         return message;
     }
 
@@ -31,10 +32,16 @@ export default class Game {
         const rikishi = document.querySelector('#backfillRikishi').value;
         this.user.backfillResults(contestName, rikishi);
         this.user.displayBackfilledResults(); // Display the updated results
+        this.saveUser();
     }
 
     provideFeedback(message) {
         document.querySelector('#feedback').textContent = message;
+    }
+
+    saveUser() {
+        this.usersData[this.selectedUser.getID()] = this.selectedUser.getUserDetails();
+        localStorage.setItem('users', JSON.stringify(this.usersData));
     }
 
     initialize() {
