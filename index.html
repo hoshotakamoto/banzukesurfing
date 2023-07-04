@@ -31,11 +31,9 @@
     <p id="feedback"></p>
     <!-- Link to the external JavaScript file -->
     <script type="module">
-    import { initGame } from './game.js';
-
-    window.onload = function() {
-        initGame();
-    };
+        import { Game } from './game.js';
+        window.game = new Game();
+        window.game.initialize();
     </script>
 </body>
 </html>
