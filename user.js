@@ -29,10 +29,6 @@ export default class User {
         this.data[contestName] = rikishi;
     }
 
-    switchUser(newUser) {
-        localStorage.setItem('user', newUser);
-    }
-
     displayBackfilledResults() {
         let results = '';
         for (const contest in picks) {
@@ -47,17 +43,5 @@ export default class User {
             name: this.name,
             picks: this.getPicks()
         };
-    }
-
-    initialize() {
-        this.displayBackfilledResults();
-        document.querySelector("#user").textContent = 'Current user: ' + this.name;
-
-        // Setup event listener for switching users
-        document.querySelector("#switchUserButton").addEventListener('click', () => {
-            const newUser = document.querySelector('#userSwitch').value;
-            this.switchUser(newUser);
-            document.querySelector("#user").textContent = 'Current user: ' + newUser;
-        });
     }
 }
