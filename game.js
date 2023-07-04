@@ -95,5 +95,5 @@ export default class Game {
 }
 
 if (typeof window !== 'undefined') {
-    window.game = new Game();
+    window.game = new Game(true);
 }
