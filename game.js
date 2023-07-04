@@ -1,9 +1,6 @@
 export default class Game {
-    constructor(initializeImmediately = false) {
+    constructor() {
         this.user = this.getUser();
-        if (initializeImmediately) {
-            this.initialize();
-        }
     }
 
     startPlaying() {
@@ -92,8 +89,4 @@ export default class Game {
         document.querySelector("#switchUserButton").addEventListener('click', () => this.switchUser());
         document.querySelector("#backfillResultsButton").addEventListener('click', () => this.backfillResults());
     }
-}
-
-if (typeof window !== 'undefined') {
-    window.game = new Game();
 }

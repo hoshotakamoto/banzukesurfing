@@ -30,6 +30,10 @@
     <button id="backfillResultsButton">Backfill Results</button>
     <p id="feedback"></p>
     <!-- Link to the external JavaScript file -->
-    <script type="module" src="game.js"></script>
+    <script type="module">
+        import { Game } from './game.js';
+        window.game = new Game();
+        window.game.initialize();
+    </script>
 </body>
 </html>
