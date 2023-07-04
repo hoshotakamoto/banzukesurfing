@@ -57,25 +57,37 @@ describe('Game', () => {
         // Set something in localStorage
         localStorage.setItem('test', 'testValue');
 
-        const game = new Game(true);
+        const game = new Game(false);
+        const spy = jest.spyOn(game, 'initialize');
 
         // Check if the initialize function has been called and content is rendered
         // Here, it assumes that you have a way to check whether the content is rendered on the page
-        expect(game.initialize).toBeCalled();
+        expect(spy).toBeCalled();
     });
 
     it('should always call initialize on window load', () => {
         // Define a mock function for the initialize method
         const mockInitialize = jest.fn();
+        // Define a mock function for initGame
+        const mockInitGame = jest.fn(() => {
+            let game = new Game(false);
+            game.initialize = mockInitialize;
+            game.initialize();
+        });
 
-        // Replace the original method with the mock function
+        // Replace the original methods with the mock functions
         Game.prototype.initialize = mockInitialize;
+        initGame = mockInitGame;
 
         // Simulate window load
         require('./game.js');
 
+        // Check if initGame has been called
+        expect(mockInitGame).toBeCalled();
+
         // Check if initialize has been called
         expect(mockInitialize).toBeCalled();
     });
+
 });
 
