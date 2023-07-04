@@ -2,54 +2,57 @@ import User from './user.js';
 
 export default class Game {
     constructor() {
-        this.users = [];
-        this.usersData = JSON.parse(localStorage.getItem('users')) || {};
-        this.selectedUser = null;
+        this.users = {};
     }
 
     loadAllUsers() {
-        this.users = Object.keys(this.usersData.map(userId => new User(userId, this.usersData[userId])));
+        const usersData = JSON.parse(localStorage.getItem('users')) || {};
+        for (let userId in usersData) {
+            this.users[userId] = new User(userId, usersData[userId]);
+        }
     }
 
     displayAllUsers() {
-        this.users.forEach(user => {
-            const userDetails = user.getUserDetails();
-            document.querySelector('#user').textContent += `User ${user.userId}: ${userDetails}\n`;
-        });
+        for (let userId in this.users) {
+            const userDetails = this.users[userId].getUserDetails();
+            document.querySelector('#user').textContent += `User ${userId}: ${userDetails}\n`;
+        }
     }
 
-    startPlaying() {
+    startPlaying(userId) {
         const rikishi = document.querySelector('#rikishi').value;
-        const picks = this.user.getPicks();
+        const picks = this.users[userId].getPicks();
         const message = "You selected: " + rikishi + "\nPrevious Picks: " + JSON.stringify(picks);
-        this.selectedUser.updatePicks(rikishi); // Update the picks with the new selection
-        this.saveUser();
+        this.users[userId].updatePicks(rikishi);
+        this.saveUser(userId);
         return message;
     }
 
-    backfillResults() {
+    backfillResults(userId) {
         const contestName = document.querySelector('#backfillContest').value;
         const rikishi = document.querySelector('#backfillRikishi').value;
-        this.user.backfillResults(contestName, rikishi);
-        this.user.displayBackfilledResults(); // Display the updated results
-        this.saveUser();
+        this.users[userId].backfillResults(contestName, rikishi);
+        this.users[userId].displayBackfilledResults();
+        this.saveUser(userId);
     }
 
     provideFeedback(message) {
         document.querySelector('#feedback').textContent = message;
     }
 
-    saveUser() {
-        this.usersData[this.selectedUser.getID()] = this.selectedUser.getUserDetails();
-        localStorage.setItem('users', JSON.stringify(this.usersData));
+    saveUser(userId) {
+        let usersData = JSON.parse(localStorage.getItem('users')) || {};
+        usersData[userId] = this.users[userId].getUserDetails();
+        localStorage.setItem('users', JSON.stringify(usersData));
     }
 
     initialize() {
         this.loadAllUsers();
         this.displayAllUsers();
 
-        // Add event listeners
-        document.querySelector("#startPlayingButton").addEventListener('click', () => this.startPlaying());
-        document.querySelector("#backfillResultsButton").addEventListener('click', () => this.backfillResults());
+        // The user needs to be passed when calling startPlaying and backfillResults
+        // TODO: Add mechanism for choosing userId
+        document.querySelector("#startPlayingButton").addEventListener('click', () => this.startPlaying(/* userId goes here */));
+        document.querySelector("#backfillResultsButton").addEventListener('click', () => this.backfillResults(/* userId goes here */));
     }
 }
