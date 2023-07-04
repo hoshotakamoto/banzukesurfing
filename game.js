@@ -2,9 +2,22 @@ import User from './user.js';
 
 export default class Game {
     constructor() {
-        this.user = new User();
+        this.users = [];
     }
 
+    loadAllUsers() {
+        for (let i = 0; i < localStorage.length; i++) {
+            const userId = localStorage.key(i);
+            this.users.push(new User(userId));
+        }
+    }
+
+    displayAllUsers() {
+        this.users.forEach(user => {
+            const userDetails = user.getUserDetails();
+            document.querySelector('#user').textContent += `User ${user.userId}: ${userDetails}\n`;
+        });
+    }
     startPlaying() {
         const rikishi = document.querySelector('#rikishi').value;
         const picks = this.user.getPicks();
@@ -25,7 +38,8 @@ export default class Game {
     }
 
     initialize() {
-        this.user.initialize();
+        this.loadAllUsers();
+        this.displayAllUsers();
 
         // Add event listeners
         document.querySelector("#startPlayingButton").addEventListener('click', () => this.startPlaying());
