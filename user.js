@@ -55,6 +55,13 @@ export default class User {
         }
     }
 
+    getUserDetails() {
+        return {
+            name: this.name,
+            picks: this.getPicks()
+        };
+    }
+
     initialize() {
         this.displayBackfilledResults();
         document.querySelector("#user").textContent = 'Current user: ' + this.name;
