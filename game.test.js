@@ -7,7 +7,7 @@ beforeEach(() => {
     localStorage.clear();
     // set localStorage values
     localStorage.setItem('user', 'testUser');
-    localStorage.setItem('testUser', JSON.stringify({ 'July 2023': '1' }));
+    localStorage.setItem('users', JSON.stringify({'testUser': { 'July 2023': '1' }}));
 
     document.body.innerHTML = `
         <p id="user"></p>
@@ -25,6 +25,7 @@ beforeEach(() => {
         <p id="feedback"></p>
     `;
     game = new Game();
+    game.initialize(); // Add this line
 });
 
 test('check if startPlaying is defined and returns expected value', () => {

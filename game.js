@@ -2,33 +2,84 @@ import User from './user.js';
 
 export default class Game {
     constructor() {
-        this.user = new User();
+        this.users = {};
+        this.userId = null;
+    }
+
+    loadAllUsers() {
+        const usersData = JSON.parse(localStorage.getItem('users')) || {};
+        for (let userId in usersData) {
+            this.users[userId] = new User(userId, usersData[userId]);
+        }
+    }
+
+    setActiveUser(userId) {
+        if (this.users[userId]) {
+            this.userId = userId;
+            return true;
+        }
+        return false;
+    }
+
+    displayAllUsers() {
+        for (let userId in this.users) {
+            const userDetails = this.users[userId].getUserDetails();
+            document.querySelector('#user').textContent += `User ${userId}: ${userDetails}\n`;
+        }
     }
 
     startPlaying() {
         const rikishi = document.querySelector('#rikishi').value;
-        const picks = this.user.getPicks();
+        const picks = this.users[this.userId].getPicks();
         const message = "You selected: " + rikishi + "\nPrevious Picks: " + JSON.stringify(picks);
-        this.user.updatePicks(rikishi); // Update the picks with the new selection
+        this.users[this.userId].updatePicks(rikishi);
+        this.saveUser();
         return message;
     }
 
     backfillResults() {
         const contestName = document.querySelector('#backfillContest').value;
         const rikishi = document.querySelector('#backfillRikishi').value;
-        this.user.backfillResults(contestName, rikishi);
-        this.user.displayBackfilledResults(); // Display the updated results
+        this.users[this.userId].backfillResults(contestName, rikishi);
+        this.users[this.userId].displayBackfilledResults();
+        this.saveUser();
     }
 
     provideFeedback(message) {
         document.querySelector('#feedback').textContent = message;
     }
 
-    initialize() {
-        this.user.initialize();
+    saveUser() {
+        let usersData = JSON.parse(localStorage.getItem('users')) || {};
+        usersData[this.userId] = this.users[this.userId].getUserDetails();
+        localStorage.setItem('users', JSON.stringify(usersData));
+    }
 
-        // Add event listeners
-        document.querySelector("#startPlayingButton").addEventListener('click', () => this.startPlaying());
-        document.querySelector("#backfillResultsButton").addEventListener('click', () => this.backfillResults());
+    switchUser(newUser) {
+        this.userId = newUser;
+        localStorage.setItem('user', newUser);
+    }
+
+    initialize() {
+        this.loadAllUsers();
+        const activeUserId = localStorage.getItem('user');
+        if (activeUserId && this.setActiveUser(activeUserId)) {
+            this.displayAllUsers();
+
+            // Setup event listener for switching users
+            document.querySelector("#switchUserButton").addEventListener('click', () => {
+                const newUser = document.querySelector('#userSwitch').value;
+                if (this.switchUser(newUser)) {
+                    document.querySelector("#user").textContent = 'Current user: ' + newUser;
+                } else {
+                    this.provideFeedback('User not found: ' + newUser);
+                }
+            });
+
+            document.querySelector("#startPlayingButton").addEventListener('click', () => this.startPlaying());
+            document.querySelector("#backfillResultsButton").addEventListener('click', () => this.backfillResults());
+        } else {
+            console.error("Unable to initialize game: invalid active user ID");
+        }
     }
 }
